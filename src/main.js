@@ -1,24 +1,49 @@
-import './style.css'
-import javascriptLogo from './javascript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.js'
+import './styles/style.css'
+import { renderTracker } from './components/tracker.js'
+import { renderConverter, setupConverter } from './components/converter.js'
+import { renderChart, setupChart, updateChart } from './components/chart.js'
+
+document.body.classList.add('dark'); // Default to dark mode
 
 document.querySelector('#app').innerHTML = `
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
-      <img src="${javascriptLogo}" class="logo vanilla" alt="JavaScript logo" />
-    </a>
-    <h1>Hello Vite!</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
+  <header>
+    <div class="logo">
+      <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="25" cy="25" r="20" fill="var(--primary-blue)" stroke="var(--primary-blue)" stroke-width="2"/>
+        <text x="25" y="32" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="24" font-weight="bold">C</text>
+      </svg>
+      <h1>CryptoWise</h1>
     </div>
-    <p class="read-the-docs">
-      Click on the Vite logo to learn more
-    </p>
-  </div>
+    <button id="theme-toggle">Toggle Theme</button>
+  </header>
+  <main>
+    <section id="tracker"></section>
+    <section id="converter"></section>
+    <section id="chart"></section>
+  </main>
 `
 
-setupCounter(document.querySelector('#counter'))
+// Theme toggle
+document.getElementById('theme-toggle').addEventListener('click', () => {
+  document.body.classList.toggle('dark');
+  document.body.classList.toggle('light');
+});
+
+// Render components
+async function initApp() {
+  document.getElementById('tracker').innerHTML = await renderTracker();
+  document.getElementById('converter').innerHTML = await renderConverter();
+  document.getElementById('chart').innerHTML = await renderChart();
+
+  setupConverter();
+  setupChart();
+  await updateChart();
+
+  // Real-time updates every minute
+  setInterval(async () => {
+    document.getElementById('tracker').innerHTML = await renderTracker();
+    await updateChart();
+  }, 60000);
+}
+
+initApp();
