@@ -42,11 +42,24 @@ export function setupConverter() {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const amount = parseFloat(cryptoAmount.value);
+    if (isNaN(amount) || amount <= 0) {
+      fiatAmount.value = 'Invalid amount';
+      return;
+    }
     const crypto = cryptoSelect.value;
     const fiat = fiatSelect.value;
 
-    const prices = await getCryptoPrices([crypto], [fiat]);
-    const rate = prices[crypto][fiat];
-    fiatAmount.value = (amount * rate).toFixed(2);
+    try {
+      const prices = await getCryptoPrices([crypto], [fiat]);
+      const rate = prices[crypto] && prices[crypto][fiat];
+      if (rate) {
+        fiatAmount.value = (amount * rate).toFixed(2);
+      } else {
+        fiatAmount.value = 'Conversion failed';
+      }
+    } catch (error) {
+      console.error('Error converting:', error);
+      fiatAmount.value = 'Error occurred';
+    }
   });
 }

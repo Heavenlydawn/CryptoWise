@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'https://api.coingecko.com/api/v3';
+const BASE_URL = '/api';
 
 const apiClient = axios.create({
   baseURL: BASE_URL,
@@ -64,5 +64,24 @@ export async function getExchangeRates() {
   } catch (error) {
     console.error('Error fetching exchange rates:', error);
     return {};
+  }
+}
+
+export async function getCoinDetails(id) {
+  try {
+    const response = await apiClient.get(`/coins/${id}`, {
+      params: {
+        localization: false,
+        tickers: false,
+        market_data: true,
+        community_data: false,
+        developer_data: false,
+        sparkline: false
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching coin details:', error);
+    return null;
   }
 }

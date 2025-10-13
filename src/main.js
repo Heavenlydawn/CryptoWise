@@ -1,7 +1,8 @@
 import './styles/style.css'
-import { renderTracker } from './components/tracker.js'
+import { renderTracker, setupTrackerClickHandler } from './components/tracker.js'
 import { renderConverter, setupConverter } from './components/converter.js'
 import { renderChart, setupChart, updateChart } from './components/chart.js'
+import { renderCoinDetail, setupCoinDetail } from './components/coinDetail.js'
 
 document.body.classList.add('dark'); // Default to dark mode
 
@@ -20,6 +21,7 @@ document.querySelector('#app').innerHTML = `
     <section id="tracker"></section>
     <section id="converter"></section>
     <section id="chart"></section>
+    <section id="coin-detail" style="display:none;"></section>
   </main>
 `
 
@@ -29,8 +31,39 @@ document.getElementById('theme-toggle').addEventListener('click', () => {
   document.body.classList.toggle('light');
 });
 
+async function showCoinDetail(coinId) {
+  const coinDetailSection = document.getElementById('coin-detail');
+  coinDetailSection.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+  coinDetailSection.style.display = 'block';
+
+  // Hide other sections
+  document.getElementById('tracker').style.display = 'none';
+  document.getElementById('converter').style.display = 'none';
+  document.getElementById('chart').style.display = 'none';
+
+  coinDetailSection.innerHTML = await renderCoinDetail(coinId);
+  setupCoinDetail(coinId);
+
+  // Setup back button
+  const backButton = document.getElementById('close-coin-detail');
+  if (backButton) {
+    backButton.addEventListener('click', () => {
+      coinDetailSection.style.display = 'none';
+      document.getElementById('tracker').style.display = 'block';
+      document.getElementById('converter').style.display = 'block';
+      document.getElementById('chart').style.display = 'block';
+    });
+  }
+}
+
 // Render components
 async function initApp() {
+  // Show loading states
+  document.getElementById('tracker').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+  document.getElementById('converter').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+  document.getElementById('chart').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+
+  // Render components
   document.getElementById('tracker').innerHTML = await renderTracker();
   document.getElementById('converter').innerHTML = await renderConverter();
   document.getElementById('chart').innerHTML = await renderChart();
@@ -39,9 +72,12 @@ async function initApp() {
   setupChart();
   await updateChart();
 
+  setupTrackerClickHandler(showCoinDetail);
+
   // Real-time updates every minute
   setInterval(async () => {
     document.getElementById('tracker').innerHTML = await renderTracker();
+    setupTrackerClickHandler(showCoinDetail);
     await updateChart();
   }, 60000);
 }
