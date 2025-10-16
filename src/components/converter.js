@@ -1,7 +1,6 @@
 import { getCryptoPrices, getExchangeRates } from '../api/api.js';
 
 export async function renderConverter() {
-  const rates = await getExchangeRates();
   const cryptoPrices = await getCryptoPrices(['bitcoin', 'ethereum'], ['usd']);
 
   const html = `

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = '/api';
+const BASE_URL = 'https://api.coingecko.com/api/v3';
 
 const apiClient = axios.create({
   baseURL: BASE_URL,

@@ -1,11 +1,13 @@
-# Coin Detail Page Implementation
+# Task: Fix 404 Errors in CryptoWise App
 
-## Tasks
-- [x] Add getCoinDetails API function to src/api/api.js
-- [x] Create src/components/coinDetail.js component
-- [x] Modify src/components/tracker.js to make coins clickable
-- [x] Update src/main.js to include coin detail section
-- [x] Add coin detail styles to src/styles/style.css
-- [ ] Test coin detail page functionality
-- [ ] Verify error handling and loading states
-- [ ] Check responsive design
+## Steps to Complete
+
+- [x] Update BASE_URL in src/api/api.js to point to CoinGecko API.
+- [x] Remove unused getExchangeRates() call in src/components/converter.js to eliminate unnecessary 404.
+- [x] Test the application locally (run `npm run dev` and check browser console for no 404s; verify data loads in tracker, converter, and chart).
+- [x] Update TODO.md to mark steps complete and confirm fixes.
+- [ ] If needed, re-deploy to hosted link and verify.
+
+## Notes
+- Changes are minimal and targeted to resolve the specific 404 errors without altering functionality.
+- After edits, all fetches should succeed using CoinGecko's public API.
